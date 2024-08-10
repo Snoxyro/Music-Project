@@ -16,7 +16,9 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
+
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -28,11 +30,7 @@ public class UserService {
     }
 
     public List<UserEntity> allUsers() {
-        List<UserEntity> users = new ArrayList<>();
-
-        this.userRepository.findAll().forEach(users::add);
-
-        return users;
+        return new ArrayList<>(this.userRepository.findAll());
     }
 
     public UserEntity createAdministrator(RegisterUserDto input) {
@@ -43,7 +41,7 @@ public class UserService {
         }
 
         var user = new UserEntity();
-        user.setFullName(input.getFullName());
+        user.setUsername(input.getUsername());
         user.setEmail(input.getEmail());
         user.setPassword(this.passwordEncoder.encode(input.getPassword()));
         user.setRole(optionalRole.get());

@@ -1,11 +1,10 @@
-package com.anyGroup.Music_Test.responses;
+package com.anyGroup.Music_Test.dto;
 
 public class LoginResponse {
+
     private String token;
 
     private long expiresIn;
-
-
 
     //Getters & Setters
     public String getToken() { return token; }

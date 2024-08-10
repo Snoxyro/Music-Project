@@ -16,6 +16,7 @@ import java.util.Optional;
 
 @Service
 public class AuthenticationService {
+
     private final RoleRepository roleRepository;
 
     private final UserRepository userRepository;
@@ -44,7 +45,7 @@ public class AuthenticationService {
         }
 
         UserEntity user = new UserEntity();
-        user.setFullName(input.getFullName());
+        user.setUsername(input.getUsername());
         user.setEmail(input.getEmail());
         user.setPassword(this.passwordEncoder.encode(input.getPassword()));
         user.setRole(optionalRole.get());
@@ -55,12 +56,12 @@ public class AuthenticationService {
     public UserEntity authenticate(LoginUserDto input) {
         this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.getEmail(),
+                        input.getUsername(),
                         input.getPassword()
                 )
         );
 
-        return this.userRepository.findByEmail(input.getEmail())
+        return this.userRepository.findByUsername(input.getUsername())
                 .orElseThrow();
     }
 }

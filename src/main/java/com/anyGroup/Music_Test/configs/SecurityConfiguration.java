@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -31,7 +32,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable()) //Don't disable while session management enabled, you can get csrf attacks otherwise!
+                .csrf(AbstractHttpConfigurer::disable) //Don't disable while session management enabled, you can get csrf attacks otherwise!
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
@@ -60,7 +61,8 @@ public class SecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/h2/**",
+        return (web) -> web.ignoring().requestMatchers(
+                "/h2/**",
                 "/v3/api-docs/**",
                 "/swagger-ui.html",
                 "/swagger-ui/**");

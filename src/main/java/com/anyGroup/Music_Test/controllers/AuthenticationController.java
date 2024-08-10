@@ -3,7 +3,7 @@ package com.anyGroup.Music_Test.controllers;
 import com.anyGroup.Music_Test.entities.UserEntity;
 import com.anyGroup.Music_Test.dto.LoginUserDto;
 import com.anyGroup.Music_Test.dto.RegisterUserDto;
-import com.anyGroup.Music_Test.responses.LoginResponse;
+import com.anyGroup.Music_Test.dto.LoginResponse;
 import com.anyGroup.Music_Test.services.AuthenticationService;
 import com.anyGroup.Music_Test.services.JwtService;
 
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
+
     private final JwtService jwtService;
 
     private final AuthenticationService authenticationService;

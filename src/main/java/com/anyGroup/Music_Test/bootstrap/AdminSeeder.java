@@ -15,11 +15,12 @@ import java.util.Optional;
 
 @Component
 public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
+
     private final RoleRepository roleRepository;
+
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
-
 
     public AdminSeeder(
             RoleRepository roleRepository,
@@ -38,19 +39,19 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private void createSuperAdministrator() {
         RegisterUserDto userDto = new RegisterUserDto();
-        userDto.setFullName("Super Admin");
+        userDto.setUsername("Super Admin");
         userDto.setEmail("super.admin@email.com");
         userDto.setPassword("1234");
 
         Optional<RoleEntity> optionalRole = roleRepository.findByName(RoleEnum.SUPER_ADMIN);
-        Optional<UserEntity> optionalUser = userRepository.findByEmail(userDto.getEmail());
+        Optional<UserEntity> optionalUser = userRepository.findByUsername(userDto.getUsername());
 
         if (optionalRole.isEmpty() || optionalUser.isPresent()) {
             return;
         }
 
-        var user = new UserEntity();
-        user.setFullName(userDto.getFullName());
+        UserEntity user = new UserEntity();
+        user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRole(optionalRole.get());
