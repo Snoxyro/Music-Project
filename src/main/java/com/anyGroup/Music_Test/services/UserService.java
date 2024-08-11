@@ -7,6 +7,7 @@ import com.anyGroup.Music_Test.entities.UserEntity;
 import com.anyGroup.Music_Test.repositories.RoleRepository;
 import com.anyGroup.Music_Test.repositories.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,24 +24,21 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
     public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<UserEntity> allUsers() {
-        return new ArrayList<>(this.userRepository.findAll());
-    }
+    public List<UserEntity> allUsers() { return new ArrayList<>(this.userRepository.findAll()); }
 
     public UserEntity createAdministrator(RegisterUserDto input) {
         Optional<RoleEntity> optionalRole = this.roleRepository.findByName(RoleEnum.ADMIN);
 
-        if (optionalRole.isEmpty()) {
-            return null;
-        }
+        if (optionalRole.isEmpty()) { return null; }
 
-        var user = new UserEntity();
+        UserEntity user = new UserEntity();
         user.setUsername(input.getUsername());
         user.setEmail(input.getEmail());
         user.setPassword(this.passwordEncoder.encode(input.getPassword()));

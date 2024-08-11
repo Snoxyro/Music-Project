@@ -1,5 +1,6 @@
 package com.anyGroup.Music_Test.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,9 +22,12 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity //Allows us to use @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')") kinda stuff in controllers to check user roles
 public class SecurityConfiguration {
+
     private final AuthenticationProvider authenticationProvider;
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Autowired
     public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;

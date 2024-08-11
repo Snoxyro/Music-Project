@@ -2,6 +2,7 @@ package com.anyGroup.Music_Test.controllers;
 
 import com.anyGroup.Music_Test.entities.UserEntity;
 import com.anyGroup.Music_Test.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }

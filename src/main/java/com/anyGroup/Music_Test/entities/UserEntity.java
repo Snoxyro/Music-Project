@@ -13,16 +13,16 @@ import java.util.List;
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(unique = true, length = 20, nullable = false)
+    @Column(name = "username", unique = true, length = 20, nullable = false)
     private String username;
 
-    @Column(unique = true, length = 100, nullable = false)
+    @Column(name = "email", unique = true, length = 100, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @OneToOne(cascade = CascadeType.REMOVE)
@@ -48,15 +48,13 @@ public class UserEntity implements UserDetails {
 
         return List.of(authority);
     }
+
     @Override
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
-    //public String getFullName() { return fullName; }
-    //public void setFullName(String fullName) { this.fullName = fullName; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

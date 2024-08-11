@@ -6,8 +6,10 @@ import com.anyGroup.Music_Test.entities.RoleEnum;
 import com.anyGroup.Music_Test.entities.UserEntity;
 import com.anyGroup.Music_Test.repositories.RoleRepository;
 import com.anyGroup.Music_Test.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -22,20 +24,15 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     private final PasswordEncoder passwordEncoder;
 
-    public AdminSeeder(
-            RoleRepository roleRepository,
-            UserRepository  userRepository,
-            PasswordEncoder passwordEncoder
-    ) {
+    @Autowired
+    public AdminSeeder(RoleRepository roleRepository, UserRepository  userRepository, PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        this.createSuperAdministrator();
-    }
+    public void onApplicationEvent(@NonNull ContextRefreshedEvent contextRefreshedEvent) { this.createSuperAdministrator(); }
 
     private void createSuperAdministrator() {
         RegisterUserDto userDto = new RegisterUserDto();

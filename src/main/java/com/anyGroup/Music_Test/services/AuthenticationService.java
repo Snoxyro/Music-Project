@@ -7,6 +7,7 @@ import com.anyGroup.Music_Test.entities.RoleEnum;
 import com.anyGroup.Music_Test.entities.UserEntity;
 import com.anyGroup.Music_Test.repositories.RoleRepository;
 import com.anyGroup.Music_Test.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,12 +26,8 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationService(
-            RoleRepository roleRepository,
-            UserRepository userRepository,
-            AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder
-    ) {
+    @Autowired
+    public AuthenticationService(RoleRepository roleRepository, UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
@@ -40,9 +37,7 @@ public class AuthenticationService {
     public UserEntity signup(RegisterUserDto input) {
         Optional<RoleEntity> optionalRole = this.roleRepository.findByName(RoleEnum.USER);
 
-        if (optionalRole.isEmpty()) {
-            return null;
-        }
+        if (optionalRole.isEmpty()) { return null; }
 
         UserEntity user = new UserEntity();
         user.setUsername(input.getUsername());
