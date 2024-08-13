@@ -34,7 +34,6 @@ public class UserController {
     @PreAuthorize("isAuthenticated() and isFullyAuthenticated()")
     public ResponseEntity<UserResponse1> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         UserEntity currentUser = (UserEntity) authentication.getPrincipal();
 
         return new ResponseEntity<>(userImpl.userGetById(currentUser.getId()), HttpStatus.OK);

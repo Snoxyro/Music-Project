@@ -1,6 +1,6 @@
 package com.anyGroup.Music_Test.dto;
 
-public class LoginUserDto {
+public class UserLoginRequest {
 
     private String username;
 

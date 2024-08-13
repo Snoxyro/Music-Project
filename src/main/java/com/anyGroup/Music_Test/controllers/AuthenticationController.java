@@ -1,18 +1,20 @@
 package com.anyGroup.Music_Test.controllers;
 
 import com.anyGroup.Music_Test.entities.UserEntity;
-import com.anyGroup.Music_Test.dto.LoginUserDto;
-import com.anyGroup.Music_Test.dto.RegisterUserDto;
+import com.anyGroup.Music_Test.dto.UserLoginRequest;
+import com.anyGroup.Music_Test.dto.UserRegisterRequest;
 import com.anyGroup.Music_Test.dto.LoginResponse;
 import com.anyGroup.Music_Test.services.AuthenticationService;
 import com.anyGroup.Music_Test.services.JwtService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RequestMapping("/auth")
 @RestController
@@ -31,15 +33,16 @@ public class AuthenticationController {
     //Constructor
 
     @PostMapping("/signup")
-    public ResponseEntity<UserEntity> register(@RequestBody RegisterUserDto registerUserDto) {
-        UserEntity registeredUser = authenticationService.signup(registerUserDto);
+    public ResponseEntity<?> register(@RequestBody UserRegisterRequest userRegisterRequest) {
+        UserEntity registeredUser = authenticationService.signup(userRegisterRequest);
 
-        return ResponseEntity.ok(registeredUser);
+        try { return new ResponseEntity<>(registeredUser, HttpStatus.OK); }
+        catch (ResponseStatusException e) { return new ResponseEntity<>(e.getReason(), e.getStatusCode()); }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        UserEntity authenticatedUser = authenticationService.authenticate(loginUserDto);
+    public ResponseEntity<?> authenticate(@RequestBody UserLoginRequest userLoginRequest) {
+        UserEntity authenticatedUser = authenticationService.authenticate(userLoginRequest);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
@@ -47,6 +50,7 @@ public class AuthenticationController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-        return ResponseEntity.ok(loginResponse);
+        try { return new ResponseEntity<>(loginResponse, HttpStatus.OK); }
+        catch (ResponseStatusException e) { return new ResponseEntity<>(e.getReason(), e.getStatusCode()); }
     }
 }

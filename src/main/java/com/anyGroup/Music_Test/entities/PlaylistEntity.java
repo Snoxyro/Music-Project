@@ -29,12 +29,12 @@ public class PlaylistEntity {
 
     //Getters & Setters
     public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public PlaylistEntity setId(long id) { this.id = id; return this; }
 
     public String getPlaylistName() { return playlistName; }
-    public void setPlaylistName(String playlistName) { this.playlistName = playlistName; }
+    public PlaylistEntity setPlaylistName(String playlistName) { this.playlistName = playlistName; return this; }
 
     public List<MusicEntity> getMusics() { return musics; }
-    public void setMusics(List<MusicEntity> musics) { this.musics = musics; }
+    public PlaylistEntity setMusics(List<MusicEntity> musics) { this.musics = musics; return this; }
     //Getters & Setters
 }

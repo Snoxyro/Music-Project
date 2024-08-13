@@ -1,6 +1,6 @@
 package com.anyGroup.Music_Test.bootstrap;
 
-import com.anyGroup.Music_Test.dto.RegisterUserDto;
+import com.anyGroup.Music_Test.dto.UserRegisterRequest;
 import com.anyGroup.Music_Test.entities.RoleEntity;
 import com.anyGroup.Music_Test.entities.RoleEnum;
 import com.anyGroup.Music_Test.entities.UserEntity;
@@ -35,7 +35,7 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(@NonNull ContextRefreshedEvent contextRefreshedEvent) { this.createSuperAdministrator(); }
 
     private void createSuperAdministrator() {
-        RegisterUserDto userDto = new RegisterUserDto();
+        UserRegisterRequest userDto = new UserRegisterRequest();
         userDto.setUsername("Super Admin");
         userDto.setEmail("super.admin@email.com");
         userDto.setPassword("1234");
@@ -47,11 +47,11 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
             return;
         }
 
-        UserEntity user = new UserEntity();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setRole(optionalRole.get());
+        UserEntity user = new UserEntity()
+                .setUsername(userDto.getUsername())
+                .setEmail(userDto.getEmail())
+                .setPassword(passwordEncoder.encode(userDto.getPassword()))
+                .setRole(optionalRole.get());
 
         userRepository.save(user);
     }

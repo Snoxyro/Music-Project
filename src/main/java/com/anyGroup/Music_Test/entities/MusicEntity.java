@@ -24,12 +24,12 @@ public class MusicEntity {
 
     //Getters & Setters
     public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public MusicEntity setId(long id) { this.id = id; return this; }
 
     public String getMusicName() { return musicName; }
-    public void setMusicName(String musicName) { this.musicName = musicName; }
+    public MusicEntity setMusicName(String musicName) { this.musicName = musicName; return this; }
 
     public ArtistEntity getArtist() { return artist; }
-    public void setArtist(ArtistEntity artist) { this.artist = artist; }
+    public MusicEntity setArtist(ArtistEntity artist) { this.artist = artist; return this; }
     //Getters & Setters
 }

@@ -2,7 +2,7 @@ package com.anyGroup.Music_Test.services;
 
 import com.anyGroup.Music_Test.dto.PlaylistRequest;
 import com.anyGroup.Music_Test.dto.PlaylistResponse1;
-import com.anyGroup.Music_Test.dto.RegisterUserDto;
+import com.anyGroup.Music_Test.dto.UserRegisterRequest;
 import com.anyGroup.Music_Test.dto.UserResponse1;
 import com.anyGroup.Music_Test.entities.*;
 import com.anyGroup.Music_Test.repositories.MusicRepository;
@@ -56,16 +56,16 @@ public class UserService implements UserImpl {
     }
 
     //TODO Remove this and make a role changing system instead
-    public UserEntity createAdministrator(RegisterUserDto input) {
+    public UserEntity createAdministrator(UserRegisterRequest input) {
         Optional<RoleEntity> optionalRole = this.roleRepository.findByName(RoleEnum.ADMIN);
 
         if (optionalRole.isEmpty()) { return null; }
 
-        UserEntity user = new UserEntity();
-        user.setUsername(input.getUsername());
-        user.setEmail(input.getEmail());
-        user.setPassword(this.passwordEncoder.encode(input.getPassword()));
-        user.setRole(optionalRole.get());
+        UserEntity user = new UserEntity()
+                .setUsername(input.getUsername())
+                .setEmail(input.getEmail())
+                .setPassword(this.passwordEncoder.encode(input.getPassword()))
+                .setRole(optionalRole.get());
 
         return this.userRepository.save(user);
     }
@@ -74,7 +74,7 @@ public class UserService implements UserImpl {
     //===============================================================================
 
     @Override
-    public UserResponse1 userGetById(Long userId) throws ResponseStatusException  {
+    public UserResponse1 userGetById(Long userId) throws ResponseStatusException {
         UserEntity user = this.userRepository.findById(userId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
@@ -83,10 +83,12 @@ public class UserService implements UserImpl {
     }
 
     @Override
-    public void userCreatePlaylist(Long userId, PlaylistRequest playlist) throws ResponseStatusException  {
-        PlaylistEntity newPlaylist = new PlaylistEntity();
+    public void userCreatePlaylist(Long userId, PlaylistRequest playlist) throws ResponseStatusException {
+        if(playlist.getPlaylistName() == null) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playlist name can't be null"); }
+        if(playlist.getPlaylistName().isEmpty()) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playlist name can't be empty"); }
+        if(playlist.getPlaylistName().length() > 20) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Playlist name can't contain more than 20 characters"); }
 
-        newPlaylist.setPlaylistName(playlist.getPlaylistName());
+        PlaylistEntity newPlaylist = new PlaylistEntity().setPlaylistName(playlist.getPlaylistName());
         this.playlistRepository.save(newPlaylist);
 
         UserEntity user = this.userRepository.findById(userId).orElseThrow(
@@ -100,7 +102,7 @@ public class UserService implements UserImpl {
     }
 
     @Override
-    public List<PlaylistResponse1> userGetAllPlaylists(Long userId) throws ResponseStatusException  {
+    public List<PlaylistResponse1> userGetAllPlaylists(Long userId) throws ResponseStatusException {
         UserEntity user = this.userRepository.findById(userId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 

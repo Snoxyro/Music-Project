@@ -29,15 +29,15 @@ public class ArtistEntity {
 
     //Getters & Setters
     public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public ArtistEntity setId(long id) { this.id = id; return this; }
 
     public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public ArtistEntity setFirstName(String firstName) { this.firstName = firstName; return this; }
 
     public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public ArtistEntity setLastName(String lastName) { this.lastName = lastName; return this; }
 
     public List<MusicEntity> getMusics() { return musics; }
-    public void setMusics(List<MusicEntity> musics) { this.musics = musics; }
+    public ArtistEntity setMusics(List<MusicEntity> musics) { this.musics = musics; return this; }
     //Getters & Setters
 }

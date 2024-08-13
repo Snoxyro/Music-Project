@@ -1,19 +1,19 @@
 package com.anyGroup.Music_Test.services;
 
-import com.anyGroup.Music_Test.dto.LoginUserDto;
-import com.anyGroup.Music_Test.dto.RegisterUserDto;
+import com.anyGroup.Music_Test.dto.UserLoginRequest;
+import com.anyGroup.Music_Test.dto.UserRegisterRequest;
 import com.anyGroup.Music_Test.entities.RoleEntity;
 import com.anyGroup.Music_Test.entities.RoleEnum;
 import com.anyGroup.Music_Test.entities.UserEntity;
 import com.anyGroup.Music_Test.repositories.RoleRepository;
 import com.anyGroup.Music_Test.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthenticationService {
@@ -36,29 +36,37 @@ public class AuthenticationService {
     }
     //Constructor
 
-    public UserEntity signup(RegisterUserDto input) {
-        Optional<RoleEntity> optionalRole = this.roleRepository.findByName(RoleEnum.USER);
+    public UserEntity signup(UserRegisterRequest registerRequest) throws ResponseStatusException {
+        RoleEntity role = this.roleRepository.findByName(RoleEnum.USER).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role 'USER' not found"));
 
-        if (optionalRole.isEmpty()) { return null; }//TODO add exception
+        if (registerRequest == null) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request can't be null"); }
+        if (registerRequest.getUsername() == null) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username can't be null"); }
+        if (registerRequest.getUsername().length() < 5) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is too short"); }
+        if (registerRequest.getUsername().length() > 20) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is too long"); }
+        if (registerRequest.getEmail() == null) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail can't be null"); }
+        if (registerRequest.getEmail().isEmpty()) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail can't be empty"); }
+        if (registerRequest.getPassword() == null) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password can't be null"); }
+        if (registerRequest.getPassword().length() < 4) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password is too short"); }
 
-        UserEntity user = new UserEntity();
-        user.setUsername(input.getUsername());
-        user.setEmail(input.getEmail());
-        user.setPassword(this.passwordEncoder.encode(input.getPassword()));
-        user.setRole(optionalRole.get());
+        UserEntity user = new UserEntity()
+                .setUsername(registerRequest.getUsername())
+                .setEmail(registerRequest.getEmail())
+                .setPassword(this.passwordEncoder.encode(registerRequest.getPassword()))
+                .setRole(role);
 
         return this.userRepository.save(user);
     }
 
-    public UserEntity authenticate(LoginUserDto input) {
-        this.authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        input.getUsername(),
-                        input.getPassword()
-                )
-        );
+    public UserEntity authenticate(UserLoginRequest loginRequest) {
+        if (loginRequest.getUsername() == null) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username can't be null"); }
+        if (loginRequest.getUsername().isEmpty()) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username can't be empty"); }
+        if (loginRequest.getPassword() == null) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password can't be null"); }
+        if (loginRequest.getPassword().isEmpty()) { throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password can't be empty"); }
 
-        return this.userRepository.findByUsername(input.getUsername())
-                .orElseThrow();
+        this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        return this.userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User with username: '" + loginRequest.getUsername() + "' not found"));
     }
 }

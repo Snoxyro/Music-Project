@@ -19,12 +19,12 @@ public class RoleEntity {
 
     //Getters & Setters
     public Long getId() { return this.id; }
-    public void setId(Long id) { this.id = id; }
+    public RoleEntity setId(Long id) { this.id = id; return this; }
 
     public RoleEnum getName() { return this.name; }
-    public void setName(RoleEnum name) { this.name = name; }
+    public RoleEntity setName(RoleEnum name) { this.name = name; return this; }
 
     public String getDescription() { return this.description; }
-    public void setDescription(String description) { this.description = description; }
+    public RoleEntity setDescription(String description) { this.description = description; return this; }
     //Getters & Setters
 }

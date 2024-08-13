@@ -1,6 +1,6 @@
 package com.anyGroup.Music_Test.controllers;
 
-import com.anyGroup.Music_Test.dto.RegisterUserDto;
+import com.anyGroup.Music_Test.dto.UserRegisterRequest;
 import com.anyGroup.Music_Test.entities.UserEntity;
 import com.anyGroup.Music_Test.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,8 @@ public class AdminController {
 
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN') and isAuthenticated()")
-    public ResponseEntity<UserEntity> createAdministrator(@RequestBody RegisterUserDto registerUserDto) {
-        UserEntity createdAdmin = userService.createAdministrator(registerUserDto);
+    public ResponseEntity<UserEntity> createAdministrator(@RequestBody UserRegisterRequest userRegisterRequest) {
+        UserEntity createdAdmin = userService.createAdministrator(userRegisterRequest);
 
         return ResponseEntity.ok(createdAdmin);
     }
