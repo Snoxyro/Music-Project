@@ -74,20 +74,24 @@ public class UserService implements UserImpl {
     //===============================================================================
 
     @Override
-    public UserResponse1 userGetById(Long userId) {
-        UserEntity user = this.userRepository.findById(userId).get();
+    public UserResponse1 userGetById(Long userId) throws ResponseStatusException  {
+        UserEntity user = this.userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(user, UserResponse1.class);
     }
 
     @Override
-    public void userCreatePlaylist(Long userId, PlaylistRequest playlist) {
+    public void userCreatePlaylist(Long userId, PlaylistRequest playlist) throws ResponseStatusException  {
         PlaylistEntity newPlaylist = new PlaylistEntity();
+
         newPlaylist.setPlaylistName(playlist.getPlaylistName());
         this.playlistRepository.save(newPlaylist);
 
-        UserEntity user = this.userRepository.findById(userId).get();
+        UserEntity user = this.userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         List<PlaylistEntity> playlists = user.getPlaylists();
         playlists.add(newPlaylist);
         user.setPlaylists(playlists);
@@ -96,22 +100,24 @@ public class UserService implements UserImpl {
     }
 
     @Override
-    public List<PlaylistResponse1> userGetAllPlaylists(Long userId) {
-        UserEntity user = this.userRepository.findById(userId).get();
+    public List<PlaylistResponse1> userGetAllPlaylists(Long userId) throws ResponseStatusException  {
+        UserEntity user = this.userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(user.getPlaylists(), new TypeToken<List<PlaylistResponse1>>() {}.getType());
     }
 
     @Override
-    public PlaylistResponse1 userGetPlaylistById(Long userId, Long playlistId) {
+    public PlaylistResponse1 userGetPlaylistById(Long userId, Long playlistId) throws ResponseStatusException {
         PlaylistEntity playlist = this.playlistRepository.findById(playlistId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Playlist not found"));
+        UserEntity user = this.userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         //Check if playlist with given id belongs to the user
-        List<PlaylistEntity> userPlaylists = this.userRepository.findById(userId).get().getPlaylists();
         boolean found = false;
-        for (PlaylistEntity uPlaylist : userPlaylists) { if (uPlaylist.getId() == playlistId) { found = true; break; } }
+        for (PlaylistEntity uPlaylist : user.getPlaylists()) { if (uPlaylist.getId() == playlistId) { found = true; break; } }
         if (!found) {throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Playlist doesn't belong to the user");}
 
         ModelMapper modelMapper = new ModelMapper();
@@ -119,16 +125,17 @@ public class UserService implements UserImpl {
     }
 
     @Override
-    public void userAddMusicToPlaylistById(Long userId, Long playlistId, Long musicId) {
+    public void userAddMusicToPlaylistById(Long userId, Long playlistId, Long musicId) throws ResponseStatusException  {
         PlaylistEntity playlist = this.playlistRepository.findById(playlistId).orElseThrow
                 (() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Playlist not found"));
         MusicEntity music = this.musicRepository.findById(musicId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Music not found"));
+        UserEntity user = this.userRepository.findById(userId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         //Check if playlist with given id belongs to the user
-        List<PlaylistEntity> userPlaylists = this.userRepository.findById(userId).get().getPlaylists();
         boolean found = false;
-        for (PlaylistEntity uPlaylist : userPlaylists) { if (uPlaylist.getId() == playlistId) { found = true; break; } }
+        for (PlaylistEntity uPlaylist : user.getPlaylists()) { if (uPlaylist.getId() == playlistId) { found = true; break; } }
         if (!found) {throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Playlist doesn't belong to the user");}
 
         List<MusicEntity> musics = playlist.getMusics();

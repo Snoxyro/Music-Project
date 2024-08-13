@@ -23,7 +23,7 @@ public class AdminController {
     //Constructor
 
     @PostMapping
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasRole('SUPER_ADMIN') and isAuthenticated()")
     public ResponseEntity<UserEntity> createAdministrator(@RequestBody RegisterUserDto registerUserDto) {
         UserEntity createdAdmin = userService.createAdministrator(registerUserDto);
 
