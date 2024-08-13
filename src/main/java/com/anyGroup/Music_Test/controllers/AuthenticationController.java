@@ -22,11 +22,13 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    //Constructor
     @Autowired
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
     }
+    //Constructor
 
     @PostMapping("/signup")
     public ResponseEntity<UserEntity> register(@RequestBody RegisterUserDto registerUserDto) {

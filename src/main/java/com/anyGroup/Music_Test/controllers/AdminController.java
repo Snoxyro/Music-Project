@@ -17,10 +17,10 @@ public class AdminController {
 
     private final UserService userService;
 
+    //Constructor
     @Autowired
-    public AdminController(UserService userService) {
-        this.userService = userService;
-    }
+    public AdminController(UserService userService) { this.userService = userService; }
+    //Constructor
 
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")

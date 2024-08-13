@@ -20,7 +20,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity //Allows us to use @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')") kinda stuff in controllers to check user roles
+@EnableMethodSecurity //Allows us to use @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')") annotation in controllers to check user roles
 public class SecurityConfiguration {
 
     private final AuthenticationProvider authenticationProvider;
@@ -39,7 +39,6 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable) //Don't disable while session management enabled, you can get csrf attacks otherwise!
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

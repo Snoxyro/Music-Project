@@ -29,6 +29,12 @@ public class UserEntity implements UserDetails {
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private RoleEntity role;
 
+    @OneToMany
+    @JoinTable(name = "users-playlists",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "playlist_id")})
+    private List<PlaylistEntity> playlists;
+
     @Override
     public boolean isAccountNonExpired() { return true; }
 
@@ -64,5 +70,8 @@ public class UserEntity implements UserDetails {
 
     public RoleEntity getRole() { return role; }
     public void setRole(RoleEntity role) { this.role = role; }
+
+    public List<PlaylistEntity> getPlaylists() { return this.playlists; }
+    public void setPlaylists(List<PlaylistEntity> playlists) { this.playlists = playlists; }
     // Getters and setters
 }

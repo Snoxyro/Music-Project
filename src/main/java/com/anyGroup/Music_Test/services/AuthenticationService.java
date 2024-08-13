@@ -26,6 +26,7 @@ public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
 
+    //Constructor
     @Autowired
     public AuthenticationService(RoleRepository roleRepository, UserRepository userRepository, AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
@@ -33,11 +34,12 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
+    //Constructor
 
     public UserEntity signup(RegisterUserDto input) {
         Optional<RoleEntity> optionalRole = this.roleRepository.findByName(RoleEnum.USER);
 
-        if (optionalRole.isEmpty()) { return null; }
+        if (optionalRole.isEmpty()) { return null; }//TODO add exception
 
         UserEntity user = new UserEntity();
         user.setUsername(input.getUsername());
